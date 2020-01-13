@@ -1,6 +1,6 @@
 ---
 title: "Data Viz in R"
-author: "Tim Dennis"
+author: ["Tim Dennis", "Kristian Allen"]
 date: "1/13/2020"
 output: html_document
 ---
@@ -17,6 +17,7 @@ library(ggplot2)
 library(tidyverse)
 library(kableExtra)
 library(lubridate)
+library(ggthemes)
 ```
 
 ## Components of the grammar
@@ -72,7 +73,7 @@ Note, the information warning at the top: **`stat_bin()` using `bins = 30`. Pick
 
 First, let's look at the ggplot code.  
 
-```{r age-histogram, eval=FALSE}
+```{r age-histogram-example, eval=FALSE}
 ggplot(data = arrests, mapping = aes(x = age)) +
   geom_histogram()
 ```
@@ -97,7 +98,7 @@ ggplot(data = arrests, mapping = aes(x = age)) +
 
 Bins are how the histogram counts up our data. The default bin is 30, but you will often want to change this depending on the shape of your data. The goal here is to see enough of the distribution of the variable to be useful for you to start asking questions of the data. 
 
-```{r age-hist-fill-color}
+```{r age-hist-fill-color-bins}
 ggplot(data = arrests, mapping = aes(x = age)) +
   geom_histogram(bins = 50, color = "white", fill = "steelblue")
 ```
@@ -112,7 +113,8 @@ While  histograms are one type of visualization used to compare the distribution
 
 ```{r box-plot}
 ggplot(data = arrests, mapping = aes(x = race_cat, y = age)) +
-  geom_boxplot()
+  geom_boxplot() +
+  theme_fivethirtyeight()
 ```
 
 For this to work we need one numeric variable and one cateogorical variables. 
