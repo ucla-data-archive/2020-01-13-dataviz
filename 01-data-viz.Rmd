@@ -121,20 +121,59 @@ For this to work we need one numeric variable and one cateogorical variables.
 
 These 212050 observations have the following five-number summary:
 
-Minimum: 0
-First quartile (25th percentile): 25.0
-Median (second quartile, 50th percentile): 45°F
-Third quartile (75th percentile): 52°F
-Maximum: 71°F
 
-```{r get-time-by-hour}
-# need to parse time into hm() and then pull out hour
-hour(hm(c("09:10", "09:02", "1:10")))
-```
+![boxplot](http://www.physics.csbsju.edu/stats/simple.box.defs.gif)
+
 
 ## Barplots 
 
-Both histograms and boxplots are tools to visualize the distribution of numerical variables. Another commonly desired task is to visualize the distribution of a categorical variable. This is a simpler task, as we are simply counting different categories within a categorical variable, also known as the levels of the categorical variable. Often the best way to visualize these different counts, also known as frequencies, is with barplots.
+Both histograms and boxplots are tools to visualize the distribution of numerical variables. Another commonly desired task is to visualize the distribution of a **categorical variable**. This is a simpler task, as we are simply counting different categories within a categorical variable, also known as the levels of the categorical variable. Often the best way to visualize these different counts, also known as frequencies, is with barplots.
+
+```{r barplots}
+#run without fill first
+ggplot(arrests, aes(x = sex)) +
+  geom_bar(fill="blue")
+
+```
+
+
+We can pick any categorical variable. 
+
+```{r bar-race}
+ggplot(arrests, aes(x = race_cat)) +
+  geom_bar()
+```
+
+Barplots are a very common way to visualize the frequency of different categories, or levels, of a single categorical variable. Another use of barplots is to visualize the joint distribution of two categorical variables at the same time. Let’s examine the joint distribution of `race` and `sex`. 
+
+```{r bar-race-sex}
+ggplot(arrests, aes(x = sex, fill = race_cat)) +
+  geom_bar()
+```
+
+Above we are telling ggplot to take the sex counts and color by the frequencies of different races within sex. This is colorful, but it can be crticized b/c as humans it is hard to tell proportion visually in this way. To remedy this we will create a `side-by-side bar chart`. 
+
+```{r bar-race-sex-side}
+ggplot(arrests, aes(x = sex, fill = race_cat)) +
+  geom_bar(position = "dodge")
+```
+
+We can also alter the text on the chart. 
+
+```{r bar-race-sex-side-title-legend}
+ggplot(arrests, aes(x = sex, fill = race_cat)) +
+  geom_bar(position = "dodge") + 
+  labs(title = "Arrest counts by sex and race", x = "Sex", y = "Arrest Count", fill = "Race")
+```
+
+And even flip it on its side. 
+
+```{r bar-race-sex-side-title-legend-onside}
+ggplot(arrests, aes(x = sex, fill = race_cat)) +
+  geom_bar(position = "dodge") + 
+  coord_flip() +
+  labs(title = "Arrest counts by sex and race", x = "Sex", y = "Arrest Count", fill = "Race")
+```
 
 ## Line graph 
 
