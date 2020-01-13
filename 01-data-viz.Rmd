@@ -18,6 +18,7 @@ library(tidyverse)
 library(kableExtra)
 library(lubridate)
 library(ggthemes)
+library(plotly)
 ```
 
 ## Components of the grammar
@@ -229,4 +230,21 @@ ggplot(arrest_counts, aes(x=arrest_date, y=count, group=race_cat, color=race_cat
 
 ```
 
-## Facet version by category
+## Zoomable features
+
+The charts we have used so far have been static, it would be nice to have an interactive option for our viewers.
+Using a tool called plotly, we can add this feature with an additional line.
+
+```{r line-chart-arrest-4}
+
+arrest_counts <- arrests %>%
+                 mutate(arrest_date = mdy(arrest_date)) %>%
+                 group_by(arrest_date, race_cat) %>%
+                 summarise(count=n())
+
+# X = arrest of date, y should = sum of arrests for that date, then group by race
+g <- ggplot(arrest_counts, aes(x=arrest_date, y=count, group=race_cat, color=race_cat)) +
+  geom_line()
+ggplotly(g, tooltip = c("race_cat"))
+
+```
