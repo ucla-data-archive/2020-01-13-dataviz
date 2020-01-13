@@ -178,6 +178,55 @@ ggplot(arrests, aes(x = sex, fill = race_cat)) +
 ## Line graph 
 
 Arrest type 
+
+For a line chart, it may be valuable to see how our data changes over time. For example in our arrest
+data, we may want to compare the number of arrests over time, and view in a line chart, to identify trends over our data span.
+
+In our case, the arrest_date will be used as the x-axis, and a total count of each of those arrests that occur on that date. 
+
+In addition, we would like to group these by race and assign a seperate color for easy identifcation.
+```{r line-chart-arrest-1}
+
+arrest_counts <- arrests %>%
+                 mutate(arrest_date = mdy(arrest_date)) %>%
+                 group_by(arrest_date, race_cat) %>%
+                 summarise(count=n())
+
+# X = arrest of date, y should = sum of arrests for that date, then group by race
+ggplot(arrest_counts, aes(x=arrest_date, y=count, group=race_cat, color=race_cat)) +
+  geom_line() 
+
+```
+
+
+## Facet version by category
+
 Group arrest type 
+
+Having all our date on one chart can sometimes be a bit busy, so another option is to use facet_wrap, which allows us to generate seperate graphs for each category rather than keeping all on one chart.
+
+```{r line-chart-arrest-2}
+
+ggplot(arrest_counts, aes(x=arrest_date, y=count, group=race_cat, color=race_cat)) +
+  geom_line() +
+  facet_wrap( ~ race_cat)
+
+```
+
+We also have full control over the labeling of the charts
+
+```{r line-chart-arrest-3}
+
+ggplot(arrest_counts, aes(x=arrest_date, y=count, group=race_cat, color=race_cat)) +
+  geom_line() +
+  facet_wrap( ~ race_cat) +
+  labs(
+    x = "Date of Arrest",              # x axis title
+    y = "Arrest Count",   # y axis title
+    title = "Arrest Count Totals by Race over Time",      # main title of figure
+    color = "Race"      # title of legend
+  ) 
+
+```
 
 ## Facet version by category
