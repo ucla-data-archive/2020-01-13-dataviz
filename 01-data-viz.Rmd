@@ -1,0 +1,142 @@
+---
+title: "Data Viz in R"
+author: "Tim Dennis"
+date: "1/13/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Needed packages
+Let’s load all the packages needed for this chapter (this assumes you’ve already installed them). Read Section 1.3 for information on how to install and load R packages.
+
+```{r load-packages, message=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(kableExtra)
+library(lubridate)
+```
+
+## Components of the grammar
+
+In short, the grammar tells us that:
+
+> **A statistical graphic is a `mapping` of `data` variables to `aes`thetic attributes of `geom`etric objects.**
+
+Specifically, we can break a graphic into the following three essential components:
+
+1. `data`: the dataset containing the variables of interest.
+1. `geom`: the geometric object in question. This refers to the type of object we can observe in a plot. For example: points, lines, and bars.
+1. `aes`: aesthetic attributes of the geometric object. For example, x/y position, color, shape, and size.  Aesthetic attributes are *mapped* to variables in the dataset.
+
+You might be wondering why we wrote the terms `data`, `geom`, and `aes` in a computer code type font. We'll see very shortly that we'll specify the elements of the grammar in R using these terms. However, let's first break down the grammar with an example.
+
+## Arrests data 
+
+We have a subset of LA Arrests data from 2017-18. 
+
+```{r load-data, message=FALSE}
+arrests <- read_csv('data/arrests_2017_2018.csv')
+```
+
+Let's look at our arrests data. Here I'll use a package called `kable` to pretty print a data table.  
+
+```{r arrests-2017-18, echo=TRUE}
+arrests %>% 
+  head(3) %>% 
+  kable(
+    digits = 2,
+    caption = "Arrests data - first three rows"#, 
+#    booktabs = TRUE
+  ) %>% 
+  kable_styling(font_size = ifelse(knitr:::is_latex_output(), 10, 16),
+                latex_options = c("hold_position"))
+```
+
+
+## Looking at the distribution
+
+### Histogram 
+
+A histogram will let us look at the distribution of a single variable. Let's look at the distribution of age in our dataset. 
+
+```{r age-histogram}
+ggplot(data = arrests, mapping = aes(x = age)) +
+  geom_histogram()
+```
+
+
+Note, the information warning at the top: **`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.** We'll come back to it. 
+
+First, let's look at the ggplot code.  
+
+```{r age-histogram, eval=FALSE}
+ggplot(data = arrests, mapping = aes(x = age)) +
+  geom_histogram()
+```
+
+`ggplot` is the main plotting function. Inside of it we tell ggplot that we are working with the arrests data `data = arrests`. After that we tell `ggplot` what variable we want to map to our plot and put that inside an `aes` function. `aes` stands for aesthetic and allows us to **map** variables in our dataframe onto a plot. Here we want `age` mapped as an x coordinate. We will get to plots that have both **x** and **y** mappings soon.  
+
+Let's add color around the edge of our bars, so we can see the bins. 
+
+```{r adding-color}
+ggplot(data = arrests, mapping = aes(x = age)) +
+  geom_histogram(color = "white")
+```
+
+We can also color the bars themselves with a `fill` parameter: 
+
+```{r age-hist-fill-color}
+ggplot(data = arrests, mapping = aes(x = age)) +
+  geom_histogram(color = "white", fill = "steelblue")
+```
+
+### Bins
+
+Bins are how the histogram counts up our data. The default bin is 30, but you will often want to change this depending on the shape of your data. The goal here is to see enough of the distribution of the variable to be useful for you to start asking questions of the data. 
+
+```{r age-hist-fill-color}
+ggplot(data = arrests, mapping = aes(x = age)) +
+  geom_histogram(bins = 50, color = "white", fill = "steelblue")
+```
+  
+### Question
+
+1. What does changing the number of bins from 30 to 50 tell us about the distribution of ages in our data?
+
+### Boxplot 
+
+While  histograms are one type of visualization used to compare the distribution of a numerical variable, another type of visualization that lets us split distribution by the values of another variable is a side-by-side boxplot. A boxplot is constructed from the information provided in the five-number summary of a numerical variable
+
+```{r box-plot}
+ggplot(data = arrests, mapping = aes(x = race_cat, y = age)) +
+  geom_boxplot()
+```
+
+For this to work we need one numeric variable and one cateogorical variables. 
+
+These 212050 observations have the following five-number summary:
+
+Minimum: 0
+First quartile (25th percentile): 25.0
+Median (second quartile, 50th percentile): 45°F
+Third quartile (75th percentile): 52°F
+Maximum: 71°F
+
+```{r get-time-by-hour}
+# need to parse time into hm() and then pull out hour
+hour(hm(c("09:10", "09:02", "1:10")))
+```
+
+## Barplots 
+
+Both histograms and boxplots are tools to visualize the distribution of numerical variables. Another commonly desired task is to visualize the distribution of a categorical variable. This is a simpler task, as we are simply counting different categories within a categorical variable, also known as the levels of the categorical variable. Often the best way to visualize these different counts, also known as frequencies, is with barplots.
+
+## Line graph 
+
+Arrest type 
+Group arrest type 
+
+## Facet version by category
